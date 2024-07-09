@@ -9,10 +9,10 @@ import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 
 public class Verification {
-    public static boolean verify_signature(File file){
+    public static boolean verify_signature(File file, File publickey_file, File signature_file){
         try {
-            byte[] publicKeyEncoded = Files.readAllBytes(Paths.get("publickey"));
-            byte[] digitalSignature = Files.readAllBytes(Paths.get("signature"));
+            byte[] publicKeyEncoded = Files.readAllBytes(Paths.get(publickey_file.getAbsolutePath()));
+            byte[] digitalSignature = Files.readAllBytes(Paths.get(signature_file.getAbsolutePath()));
 
             X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyEncoded);
             KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");

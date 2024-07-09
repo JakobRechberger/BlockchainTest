@@ -14,7 +14,7 @@ public class Chain {
 
     public void addBlock(File file) {
         String fileAsHash = fileToHash(file);
-        if (verify_signature(file)){
+        if (verify_signature(file, new File("publickey"), new File("signature"))){
             if(blocks.isEmpty()) {
                 Block genesis = new Block();
                 genesis.setTimestamp(System.currentTimeMillis());
