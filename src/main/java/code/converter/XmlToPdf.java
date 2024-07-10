@@ -49,15 +49,15 @@ public class XmlToPdf {
             StringBuilder htmlContent = new StringBuilder();
             htmlContent.append("<html><head><title>Test Report</title>");
             htmlContent.append("<style>");
-            htmlContent.append("table { width: 100%; border-collapse: collapse; }");
-            htmlContent.append("th, td { border: 1px solid black; padding: 8px; text-align: left; }");
-            htmlContent.append("th { background-color: #f2f2f2; }");
+            htmlContent.append("table { width: 100%; border-collapse: collapse; font-size: 10px;}");
+            htmlContent.append("th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 10px; }");
+            htmlContent.append("th { background-color: #f2f2f2; font-size: 10px;}");
             htmlContent.append("tr:nth-child(even) { background-color: #f9f9f9; }");
             htmlContent.append("pre { white-space: pre-wrap; word-wrap: break-word; }");
             htmlContent.append("</style></head><body>");
             htmlContent.append("<h1>Test Report</h1>");
             htmlContent.append("<h2>Test Suite: ").append(doc.getDocumentElement().getAttribute("name")).append("</h2>");
-            htmlContent.append("<table><tr><th>Test Case</th><th>Class</th><th>Time</th><th>Result</th><th>Code</th></tr>");
+            htmlContent.append("<table><tr><th>Test Case</th><th>Class</th><th>Time</th><th>Result</th><th>Message</th><th>Code</th></tr>");
 
             NodeList testCaseNodes = doc.getElementsByTagName("testcase");
             for (int i = 0; i < testCaseNodes.getLength(); i++) {
@@ -71,6 +71,7 @@ public class XmlToPdf {
                     boolean isFailed = testCaseElement.getElementsByTagName("failure").getLength() > 0;
                     String testResult = isFailed ? "Failed" : "Passed";
                     String resultColor = isFailed ? "red" : "green";
+                    String failureMessage = isFailed ? escapeHtml(testCaseElement.getElementsByTagName("failure").item(0).getTextContent()) : "";
                     String codeSnippet = escapeHtml(testCaseMap.getOrDefault(testName, ""));
 
                     htmlContent.append("<tr>")
@@ -78,6 +79,7 @@ public class XmlToPdf {
                             .append("<td>").append(testClass).append("</td>")
                             .append("<td>").append(testTime).append("</td>")
                             .append("<td style='background-color:").append(resultColor).append(";'>").append(testResult).append("</td>")
+                            .append("<td>").append(failureMessage).append("</td>")
                             .append("<td><pre>").append(codeSnippet).append("</pre></td>")
                             .append("</tr>");
                 }
