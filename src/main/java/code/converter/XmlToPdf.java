@@ -12,10 +12,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
+import java.util.Map;
 
 public class XmlToPdf {
-    public static void convertXmlToPdf(File filepath) {
-            String htmlContent = htmlStringBuilder(filepath);
+    public static void convertXmlToPdf(File filepath, Map<String, String> testCaseMap) {
+            String htmlContent = htmlStringBuilder(filepath, testCaseMap);
             String htmlFilePath = changeFileSuffix(filepath.getPath());
             try{
                 FileWriter writer = new FileWriter(htmlFilePath);
@@ -38,16 +39,7 @@ public class XmlToPdf {
             }
 
     }
-    private static String getCodeSnippet(String testClass, String testName) {
-        /**try {
-            File testcases = new File("target/test-classes/TestReport");
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }*/
-        return "";
-    }
-    public static String htmlStringBuilder(File filepath) {
+    public static String htmlStringBuilder(File filepath, Map<String, String> testCaseMap) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -79,7 +71,7 @@ public class XmlToPdf {
                     boolean isFailed = testCaseElement.getElementsByTagName("failure").getLength() > 0;
                     String testResult = isFailed ? "Failed" : "Passed";
                     String resultColor = isFailed ? "red" : "green";
-                    String codeSnippet = getCodeSnippet(testClass, testName);
+                    String codeSnippet = escapeHtml(testCaseMap.getOrDefault(testName, ""));
 
                     htmlContent.append("<tr>")
                             .append("<td>").append(testName).append("</td>")
@@ -100,6 +92,16 @@ public class XmlToPdf {
     }
     public static String changeFileSuffix(String filepath){
         return filepath.substring(0,filepath.length() - 3) + "html";
+    }
+    public static String escapeHtml(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
     }
 }
 

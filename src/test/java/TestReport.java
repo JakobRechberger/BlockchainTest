@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestReport {
     @Test
-    public void UnitTestTrue(){
+    void UnitTestTrue(){
         int x = 0;
         int y = 0;
         for(int i = 0; i < 100; i++){
@@ -17,7 +17,7 @@ public class TestReport {
         assertEquals(y, 99);
     }
     @Test
-    public void UnitTestFalse(){
+    void UnitTestFalse(){
         int x = 0;
         int y = 0;
         for(int i = 0; i < 100; i++){
