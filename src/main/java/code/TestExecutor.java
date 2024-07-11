@@ -19,15 +19,49 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TestExecutor {
+
     public static void main(String[] args) {
         try {
-            executeTestsAndProcessReport();
+            File file = readFileFromConsole();
+            if (file != null){
+                String filename = filterFilenameFromPath(file.getAbsolutePath());
+                executeTestsAndProcessReport(filename);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void executeTestsAndProcessReport() throws MavenInvocationException {
-        // Set up Maven invoker
+    public static File readFileFromConsole() throws IOException {
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        System.out.println("Enter a pathname for your JUnit Test class");
+        while (true) {
+            String filepath = reader.readLine();
+            File file = new File(filepath);
+            if (file.exists()){
+                reader.close();
+                System.out.println("Creating Test Report. This can take a moment...");
+                return file;
+            } else if (filepath.equalsIgnoreCase("x")) {
+                System.out.println("aborting...");
+                break;
+            } else{
+                System.out.println("FileNotFound Exception: Please enter a valid filepath or type 'x' to abort");
+            }
+        }
+        reader.close();
+        return null;
+    }
+    public static String filterFilenameFromPath(String path){
+        File file = new File(path);
+        if (path.endsWith(".java")){
+            return file.getName().substring(0, file.getName().length() - 5);
+        }
+        else {
+            return file.getName();
+        }
+    }
+    public static void executeTestsAndProcessReport(String filename) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File("pom.xml"));
         request.setGoals(Arrays.asList("clean", "site"));
@@ -38,9 +72,8 @@ public class TestExecutor {
             throw new IllegalStateException("Build failed.");
         }
         try {
-            Map<String, String> testCaseMap = decompileClassFile("target/test-classes/TestReport.class");
-            //decompileCode(new File("target/test-classes/TestReport.class"));
-            XmlToPdf.convertXmlToPdf(new File("target/surefire-reports/TEST-TestReport.xml"), testCaseMap);
+            Map<String, String> testCaseMap = decompileClassFile("target/test-classes/"+ filename + ".class");
+            XmlToPdf.convertXmlToPdf(new File("target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,19 +114,17 @@ public class TestExecutor {
 
     public static Map<String, String> extractTestCaseMethods(String decompiledCode) {
         Map<String, String> testCaseMap = new HashMap<>();
-        // Regex pattern to match method signatures and bodies in the decompiled code
         Pattern pattern = Pattern.compile("(@Test\\s+)?(public|protected|private|static|\\s) +[\\w\\[\\]]+ +(\\w+) *\\([^\\)]*\\) *(\\{(?:[^\\{\\}]|\\{(?:[^\\{\\}]|\\{[^\\{\\}]*\\})*\\})*\\})");
         Matcher matcher = pattern.matcher(decompiledCode);
 
         while (matcher.find()) {
-            String annotation = matcher.group(1); // This captures the @Test annotation if present
+            String annotation = matcher.group(1);
             String methodSignature = matcher.group();
-            String methodName = matcher.group(3); // This captures the method name
+            String methodName = matcher.group(3);
             if (annotation.startsWith("@Test")) {
                 testCaseMap.put(methodName, methodSignature);
             }
         }
-
         return testCaseMap;
     }
 

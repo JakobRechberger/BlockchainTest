@@ -6,7 +6,8 @@ import java.nio.file.Paths;
 import java.security.*;
 
 public class Signature {
-    public static void main(String[] args) {
+    public static void signFile(File file) {
+        String filepath = file.getAbsolutePath();
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA", "SUN");
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
@@ -22,7 +23,7 @@ public class Signature {
             // Supply the data to be signed to the Signature object
             // using the update() method and generate the digital
             // signature.
-            byte[] bytes = Files.readAllBytes(Paths.get("hello.txt").toAbsolutePath());
+            byte[] bytes = Files.readAllBytes(Paths.get(filepath).toAbsolutePath());
             signature.update(bytes);
             byte[] digitalSignature = signature.sign();
 

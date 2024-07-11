@@ -27,7 +27,7 @@ public class XmlToPdf {
             catch (Exception e){
                 e.printStackTrace();
             }
-            try (OutputStream os = new FileOutputStream("TestReport.pdf")) {
+            try (OutputStream os = new FileOutputStream(filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf")) {
                 PdfRendererBuilder builder = new PdfRendererBuilder();
                 builder.useFastMode();
                 builder.withHtmlContent(htmlContent, new File(htmlFilePath).getParent());
@@ -77,7 +77,7 @@ public class XmlToPdf {
                     htmlContent.append("<tr>")
                             .append("<td>").append(testName).append("</td>")
                             .append("<td>").append(testClass).append("</td>")
-                            .append("<td>").append(testTime).append("</td>")
+                            .append("<td>").append(testTime).append("s</td>")
                             .append("<td style='background-color:").append(resultColor).append(";'>").append(testResult).append("</td>")
                             .append("<td>").append(failureMessage).append("</td>")
                             .append("<td><pre>").append(codeSnippet).append("</pre></td>")
