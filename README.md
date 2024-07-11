@@ -13,4 +13,5 @@ Project is written in Java with Maven
 
 
 #### Test Report Snapshot
-![image](https://github.com/JakobRechberger/BlockchainTest/assets/92316518/436fae9f-eef2-4116-91c8-07a7dc0040fc)
+![image](https://github.com/user-attachments/assets/bb2647c5-9730-4d15-84d8-69a003d67cef)
+
