@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class XmlToPdf {
@@ -57,6 +59,7 @@ public class XmlToPdf {
             htmlContent.append("</style></head><body>");
             htmlContent.append("<h1>Test Report</h1>");
             htmlContent.append("<h2>Test Suite: ").append(doc.getDocumentElement().getAttribute("name")).append("</h2>");
+            htmlContent.append("<p>Report created: ").append(formatDate()).append("</p>");
             htmlContent.append("<table><tr><th>Test Case</th><th>Class</th><th>Time</th><th>Result</th><th>Message</th><th>Code</th></tr>");
 
             NodeList testCaseNodes = doc.getElementsByTagName("testcase");
@@ -104,6 +107,11 @@ public class XmlToPdf {
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
+    }
+    public static String formatDate(){
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return myDateObj.format(myFormatObj);
     }
 }
 
