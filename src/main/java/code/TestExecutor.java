@@ -3,20 +3,12 @@ import code.converter.XmlToPdf;
 import org.apache.maven.shared.invoker.*;
 import org.benf.cfr.reader.api.CfrDriver;
 import org.benf.cfr.reader.api.OutputSinkFactory;
-import org.w3c.dom.Document;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import java.awt.event.TextListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.*;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TestExecutor {
 
@@ -25,11 +17,23 @@ public class TestExecutor {
             File file = readFileFromConsole();
             if (file != null){
                 String filename = filterFilenameFromPath(file.getAbsolutePath());
-                executeTestsAndProcessReport(filename);
+                File testReport=executeTestsAndProcessReport(filename);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public static File initAndExecuteTestReport(){
+        try {
+            File file = readFileFromConsole();
+            if (file != null){
+                String filename = filterFilenameFromPath(file.getAbsolutePath());
+                return executeTestsAndProcessReport(filename);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static File readFileFromConsole() throws IOException {
         BufferedReader reader = new BufferedReader(
@@ -61,7 +65,7 @@ public class TestExecutor {
             return file.getName();
         }
     }
-    public static void executeTestsAndProcessReport(String filename) throws MavenInvocationException {
+    public static File executeTestsAndProcessReport(String filename) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File("pom.xml"));
         request.setGoals(Arrays.asList("clean", "site"));
@@ -73,11 +77,11 @@ public class TestExecutor {
         }
         try {
             Map<String, String> testCaseMap = decompileClassFile("target/test-classes/"+ filename + ".class");
-            XmlToPdf.convertXmlToPdf(new File("target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
-
+            return XmlToPdf.convertXmlToPdf(new File("target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return new File("");
     }
 
     public static Map<String, String> decompileClassFile(String classFilePath) {

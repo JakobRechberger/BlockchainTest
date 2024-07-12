@@ -9,12 +9,12 @@ import static code.Verification.verify_signature;
 
 public class TestVerification {
     public static void main(String[] args) {
-        signFile();
+        testSignAndCheck();
     }
     public static void signFile(){
         Signature.signFile(new File("TEST-TestReport.pdf"));
     }
-    public static void verifyFile() throws InterruptedException {
+    /**public static void verifyFile() throws InterruptedException {
         TestObject object1 = new TestObject(new File("hello.txt"));
         object1.setPublickey(new File("publickey"));
         object1.setSignature(new File("signature"));
@@ -27,6 +27,17 @@ public class TestVerification {
         }
         else {
             System.out.println("Test took too long to upload");
+        }
+    }*/
+    public static void testSignAndCheck(){
+        TestObject testReport = new TestObject(TestExecutor.initAndExecuteTestReport());
+        Signature.signFile(testReport.getTestObject());
+        String testReportFileName = testReport.getTestObject().getName();
+        String substring = testReportFileName.substring(0, testReportFileName.length() - 4);
+        testReport.setSignature(new File("temp/signatures/"+ substring +"_signature" ));
+        testReport.setPublickey(new File("temp/signatures/"+ substring +"_publickey" ));
+        if(verify_signature(testReport.getTestObject(), testReport.getPublickey(), testReport.getSignature())){
+            System.out.println("Signature verified");
         }
     }
 }
