@@ -7,6 +7,7 @@ import java.util.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static code.TestVerification.getString;
 import static code.Verification.verify_signature;
 
 public class Chain {
@@ -90,31 +91,7 @@ public class Chain {
         return s.toString();
     }
     public String fileToHash(File file){
-        try {
-            byte[] buffer = new byte[8192];
-            int count;
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-            while ((count = bis.read(buffer)) > 0) {
-                digest.update(buffer, 0, count);
-            }
-            bis.close();
-            byte[] hash = digest.digest();
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            System.out.println("Hash-Value of File: "+hexString);
-            return hexString.toString();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return "Error could not convert to hash";
+        return getString(file);
     }
     public static void main(String[] args) {
         Chain c = new Chain();
