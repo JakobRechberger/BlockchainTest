@@ -9,8 +9,8 @@ import java.util.zip.*;
 
 public class CompressProject {
     public static void main(String[] args) {
-        String sourceDirPath = "C:\\Users\\jakob\\IdeaProjects\\BlockchainTest";
-        String zipFilePath = "C:\\Users\\jakob\\IdeaProjects\\project-snapshot.zip";
+        String sourceDirPath = "";
+        String zipFilePath = "";
 
         try {
             zipDirectory(Paths.get(sourceDirPath), Paths.get(zipFilePath));
