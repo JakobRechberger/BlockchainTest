@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class XmlToPdf {
-    public static File convertXmlToPdf(File filepath, Map<String, String> testCaseMap) {
+    public static File convertXmlToPdf(File filepath, String contentRoot, Map<String, String> testCaseMap) {
             String htmlContent = htmlStringBuilder(filepath, testCaseMap);
             String htmlFilePath = changeFileSuffix(filepath.getPath());
             try{
@@ -29,7 +29,7 @@ public class XmlToPdf {
             catch (Exception e){
                 e.printStackTrace();
             }
-            try (OutputStream os = new FileOutputStream(filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf")) {
+            try (OutputStream os = new FileOutputStream(contentRoot + filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf")) {
                 PdfRendererBuilder builder = new PdfRendererBuilder();
                 builder.useFastMode();
                 builder.withHtmlContent(htmlContent, new File(htmlFilePath).getParent());
@@ -39,7 +39,7 @@ public class XmlToPdf {
             catch (Exception e){
                 e.printStackTrace();
             }
-            return new File(filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf");
+            return null;
 
     }
     public static String htmlStringBuilder(File filepath, Map<String, String> testCaseMap) {

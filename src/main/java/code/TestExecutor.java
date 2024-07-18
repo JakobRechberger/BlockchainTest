@@ -1,4 +1,5 @@
 package code;
+import code.converter.POMChecker;
 import code.converter.XmlToPdf;
 import org.apache.maven.shared.invoker.*;
 import org.benf.cfr.reader.api.CfrDriver;
@@ -16,8 +17,9 @@ public class TestExecutor {
         try {
             File file = readFileFromConsole();
             if (file != null){
+                String contentRootPath= filterContentRoot(file);
                 String filename = filterFilenameFromPath(file.getAbsolutePath());
-                File testReport=executeTestsAndProcessReport(filename);
+                File testReport=executeTestsAndProcessReport(filename, contentRootPath);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,7 +30,7 @@ public class TestExecutor {
             File file = readFileFromConsole();
             if (file != null){
                 String filename = filterFilenameFromPath(file.getAbsolutePath());
-                return executeTestsAndProcessReport(filename);
+                return executeTestsAndProcessReport(filename, filterContentRoot(file));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,6 +58,7 @@ public class TestExecutor {
         reader.close();
         return null;
     }
+
     public static String filterFilenameFromPath(String path){
         File file = new File(path);
         if (path.endsWith(".java")){
@@ -65,21 +68,33 @@ public class TestExecutor {
             return file.getName();
         }
     }
-    public static File executeTestsAndProcessReport(String filename) throws MavenInvocationException {
-        InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File("pom.xml"));
-        request.setGoals(Arrays.asList("clean", "site"));
-        Invoker invoker = new DefaultInvoker();
-        invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
-        InvocationResult result = invoker.execute(request);
-        if (result.getExitCode() != 0) {
-            throw new IllegalStateException("Build failed.");
+    public static String filterContentRoot(File file){
+        String path = file.getAbsolutePath();
+        if(path.contains("src")){
+            path = path.substring(0, path.indexOf("src"));
         }
-        try {
-            Map<String, String> testCaseMap = decompileClassFile("target/test-classes/"+ filename + ".class");
-            return XmlToPdf.convertXmlToPdf(new File("target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
-        } catch (Exception e) {
-            e.printStackTrace();
+        return path;
+    }
+    public static File executeTestsAndProcessReport(String filename, String contentRoot) throws MavenInvocationException {
+        InvocationRequest request = new DefaultInvocationRequest();
+        if(POMChecker.checkDependenciesOfPom(contentRoot + "pom.xml")){
+            request.setPomFile(new File(contentRoot + "pom.xml"));
+            request.setGoals(Arrays.asList("clean", "site"));
+            Invoker invoker = new DefaultInvoker();
+            invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+            InvocationResult result = invoker.execute(request);
+            if (result.getExitCode() != 0) {
+                throw new IllegalStateException("Build failed.");
+            }
+            try {
+                Map<String, String> testCaseMap = decompileClassFile(contentRoot + "target/test-classes/"+ filename + ".class");
+                return XmlToPdf.convertXmlToPdf(new File(contentRoot + "target/surefire-reports/TEST-" + filename + ".xml"), contentRoot, testCaseMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            System.out.println("Dependencies not found please refer to the docs and check the required dependenicies");
         }
         return new File("");
     }
