@@ -1,4 +1,4 @@
-package code.converter;
+package code.util;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;

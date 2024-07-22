@@ -1,4 +1,4 @@
-package code.converter;
+package code.util;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,8 +9,8 @@ import java.util.zip.*;
 
 public class CompressProject {
     public static void main(String[] args) {
-        String sourceDirPath = "";
-        String zipFilePath = "";
+        String sourceDirPath = "C:\\Users\\jakob\\IdeaProjects\\BlockchainTest";
+        String zipFilePath = "C:\\Users\\jakob\\IdeaProjects\\project-snapshot.zip";
 
         try {
             zipDirectory(Paths.get(sourceDirPath), Paths.get(zipFilePath));

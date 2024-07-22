@@ -1,20 +1,19 @@
-package code;
-import java.io.BufferedInputStream;
+package code.blockchain;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.security.SecureRandom;
 import java.util.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static code.TestVerification.getString;
-import static code.Verification.verify_signature;
+import static code.signature.Verification.verify_signature;
+import static code.util.FileUtil.getHashValueOfFileContent;
 
 public class Chain {
     LinkedList<Block> blocks = new LinkedList<>();
 
     public void addBlock(File file) {
-        String fileAsHash = fileToHash(file);
+        String fileAsHash = getHashValueOfFileContent(file);
         if (verify_signature(file, new File("publickey"), new File("signature"))){
             if(blocks.isEmpty()) {
                 Block genesis = new Block();
@@ -78,20 +77,17 @@ public class Chain {
 
         return s;
     }
-    public String generateNonce() {																//berechnet zufällige Nonce
-        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";		//alle Characters die zu verwenden sind
+    public String generateNonce() {
+        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom r = new SecureRandom();
         StringBuilder s= new StringBuilder();
-        for(int i = 0; i < 8; i++) {															//erstelle neuen STring zu dem acht mal ein zufälliger Buchstaber/Zahl hinzugefügt wird
+        for(int i = 0; i < 8; i++) {
             int index = r.nextInt(letters.length());
             //char b = (char) ('a' + r.nextInt(26));
             char c = letters.charAt(index);
             s.append(c);
         }
         return s.toString();
-    }
-    public String fileToHash(File file){
-        return getString(file);
     }
     public static void main(String[] args) {
         Chain c = new Chain();
@@ -105,7 +101,3 @@ public class Chain {
     }
 }
 
-//7befd7e189716dda9eb88e6f0bf2a0bb1eb5499ef3e7f8bb55fe930ea201295f
-//7f29ce27f081292726b525bbe67d4a87b6fe98c5df57e287dfe5c2f21428686e
-//7f29ce27f081292726b525bbe67d4a87b6fe98c5df57e287dfe5c2f21428686e
-//b64a066b50b6beb2377dc268e5ead6d5d8ba37d7c043d12fea836965cc6be498

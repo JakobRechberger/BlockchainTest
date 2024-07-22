@@ -1,6 +1,6 @@
-package code;
-import code.converter.POMChecker;
-import code.converter.XmlToPdf;
+package code.reportGenerator;
+import code.util.POMChecker;
+import code.util.XmlToPdf;
 import org.apache.maven.shared.invoker.*;
 import org.benf.cfr.reader.api.CfrDriver;
 import org.benf.cfr.reader.api.OutputSinkFactory;
@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static code.util.FileUtil.*;
 
 public class TestExecutor {
 
@@ -36,44 +38,6 @@ public class TestExecutor {
             e.printStackTrace();
         }
         return null;
-    }
-    public static File readFileFromConsole() throws IOException {
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-        System.out.println("Enter a pathname for your JUnit Test class");
-        while (true) {
-            String filepath = reader.readLine();
-            File file = new File(filepath);
-            if (file.exists()){
-                reader.close();
-                System.out.println("Creating Test Report. This can take a moment...");
-                return file;
-            } else if (filepath.equalsIgnoreCase("x")) {
-                System.out.println("aborting...");
-                break;
-            } else{
-                System.out.println("FileNotFound Exception: Please enter a valid filepath or type 'x' to abort");
-            }
-        }
-        reader.close();
-        return null;
-    }
-
-    public static String filterFilenameFromPath(String path){
-        File file = new File(path);
-        if (path.endsWith(".java")){
-            return file.getName().substring(0, file.getName().length() - 5);
-        }
-        else {
-            return file.getName();
-        }
-    }
-    public static String filterContentRoot(File file){
-        String path = file.getAbsolutePath();
-        if(path.contains("src")){
-            path = path.substring(0, path.indexOf("src"));
-        }
-        return path;
     }
     public static File executeTestsAndProcessReport(String filename, String contentRoot) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();

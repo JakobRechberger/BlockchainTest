@@ -1,4 +1,4 @@
-package code;
+package code.reportGenerator;
 
 import java.io.File;
 import java.time.LocalDateTime;

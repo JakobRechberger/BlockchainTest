@@ -1,13 +1,5 @@
-package code;
+package code.blockchain;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Base64.Encoder;
 
 
 public class Block {
@@ -24,14 +16,14 @@ public class Block {
     public void setProofOfWork(String proofOfWork) {
         this.proofOfWork = proofOfWork;
     }
-    public void setData(String data){														//Data String addiert alle Strings für Wert des Blocks
+    public void setData(String data){
         String s = "";
         s+= timestamp + data + nonce + proofOfWork;
         this.data= s;
 
     }
     @Override
-    public String toString() {													//neue toString Methode m Format"timestamp|nonce|pow
+    public String toString() {
         String s ="";
         s += timestamp+"|"+data+"|"+nonce+"|"+proofOfWork;
         return s;
