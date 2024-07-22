@@ -43,7 +43,8 @@ public class TestExecutor {
         InvocationRequest request = new DefaultInvocationRequest();
         if(POMChecker.checkDependenciesOfPom(contentRoot + "pom.xml")){
             request.setPomFile(new File(contentRoot + "pom.xml"));
-            request.setGoals(Arrays.asList("clean", "site"));
+            ArrayList<String> mavenCommands = new ArrayList<>(Arrays.asList("clean", "site"));
+            request.addArgs(mavenCommands);
             Invoker invoker = new DefaultInvoker();
             invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
             InvocationResult result = invoker.execute(request);
@@ -58,7 +59,7 @@ public class TestExecutor {
             }
         }
         else{
-            System.out.println("Dependencies not found please refer to the docs and check the required dependenicies");
+            System.out.println("Dependencies not found please refer to the docs and check the required dependencies");
         }
         return new File("");
     }
