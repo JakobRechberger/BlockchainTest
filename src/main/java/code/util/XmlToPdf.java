@@ -20,6 +20,7 @@ public class XmlToPdf {
     public static File convertXmlToPdf(File filepath, String contentRoot, Map<String, String> testCaseMap) {
             String htmlContent = htmlStringBuilder(filepath, testCaseMap);
             String htmlFilePath = changeFileSuffix(filepath.getPath());
+            String pdfFileName = filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf";
             try{
                 FileWriter writer = new FileWriter(htmlFilePath);
                 writer.write(htmlContent);
@@ -29,12 +30,13 @@ public class XmlToPdf {
             catch (Exception e){
                 e.printStackTrace();
             }
-            try (OutputStream os = new FileOutputStream(contentRoot + filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf")) {
+            try (OutputStream os = new FileOutputStream(pdfFileName)) {
                 PdfRendererBuilder builder = new PdfRendererBuilder();
                 builder.useFastMode();
                 builder.withHtmlContent(htmlContent, new File(htmlFilePath).getParent());
                 builder.toStream(os);
                 builder.run();
+                return new File(pdfFileName);
             }
             catch (Exception e){
                 e.printStackTrace();

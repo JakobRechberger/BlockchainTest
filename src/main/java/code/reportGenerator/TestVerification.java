@@ -9,8 +9,7 @@ import static code.util.FileUtil.getHashValueOfFileContent;
 
 public class TestVerification {
     public static void main(String[] args) {
-        //testSignAndCheck();
-        System.out.println(getHashValueOfFileContent(new File("target/surefire-reports/TEST-SampleTests.html")));
+        testSignAndCheck();
     }
      public static void signFile(){
         Signature.signFile(new File("TEST-TestReport.pdf"));
