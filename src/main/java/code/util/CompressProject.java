@@ -1,5 +1,6 @@
 package code.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,16 +10,22 @@ import java.util.zip.*;
 
 public class CompressProject {
     public static void main(String[] args) {
-        String sourceDirPath = "C:\\Users\\jakob\\IdeaProjects\\BlockchainTest";
-        String zipFilePath = "C:\\Users\\jakob\\IdeaProjects\\project-snapshot.zip";
+        initZipProject("C:\\Users\\*****\\IdeaProjects\\BlockchainTest");
 
-        try {
-            zipDirectory(Paths.get(sourceDirPath), Paths.get(zipFilePath));
+    }
+    public static void initZipProject(String projectPath){
+        String[] parts = projectPath.split("[\\\\/]");
+        StringBuilder zipFilePath = new StringBuilder();
+        for (int i = 0; i < parts.length - 1; i++){
+            zipFilePath.append(parts[i]).append("/");
+        }
+        zipFilePath.append(parts[parts.length - 1]).append(".zip");
+        try{
+            zipDirectory(Paths.get(projectPath), Paths.get(String.valueOf(zipFilePath)));
             System.out.println("Directory successfully zipped.");
-        } catch (IOException e) {
+        } catch(IOException e){
             e.printStackTrace();
         }
-
     }
     public static void zipDirectory(Path sourceDirPath, Path zipFilePath) throws IOException {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipFilePath));
