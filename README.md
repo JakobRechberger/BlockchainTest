@@ -14,7 +14,14 @@ Project is written in Java with Maven
 - Signature is verified before appended to Block
 
 #### Tutorial Create Test Report for Test Suite in other local Maven Repo:
-1. Make sure you have add the following dependencies to your pom.xml in your other repo (you may have to do some refactoring):
+With this tutorial you can create a test report like the screenshot linked below from any local maven repository
+
+Prerequisites: 
+- You need to configure Maven on your system [Maven Installation](https://maven.apache.org/download.cgi)
+- add MAVEN_HOME environment variable to PATH
+
+Steps:
+1. Make sure you have the following dependencies in your pom.xml in your other repo (you may have to do some refactoring):
 
 
     <details>
