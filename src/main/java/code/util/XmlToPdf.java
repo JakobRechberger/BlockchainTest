@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class XmlToPdf {
-    public static File convertXmlToPdf(File filepath, String contentRoot, Map<String, String> testCaseMap) {
+    public static File convertXmlToPdf(File filepath, Map<String, String> testCaseMap) {
             String htmlContent = htmlStringBuilder(filepath, testCaseMap);
             String htmlFilePath = changeFileSuffix(filepath.getPath());
             String pdfFileName = filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf";

@@ -6,7 +6,7 @@ import java.util.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static code.signature.Verification.verify_signature;
+import static code.signature.Verification.verifySignature;
 import static code.util.FileUtil.getHashValueOfFileContent;
 
 public class Chain {
@@ -14,7 +14,7 @@ public class Chain {
 
     public void addBlock(File file) {
         String fileAsHash = getHashValueOfFileContent(file);
-        if (verify_signature(file, new File("publickey"), new File("signature"))){
+        if (verifySignature(file, new File("publickey"), new File("signature"))){
             if(blocks.isEmpty()) {
                 Block genesis = new Block();
                 genesis.setTimestamp(System.currentTimeMillis());

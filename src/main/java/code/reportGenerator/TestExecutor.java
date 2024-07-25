@@ -53,7 +53,7 @@ public class TestExecutor {
             }
             try {
                 Map<String, String> testCaseMap = decompileClassFile(contentRoot + "target/test-classes/"+ filename + ".class");
-                return XmlToPdf.convertXmlToPdf(new File(contentRoot + "target/surefire-reports/TEST-" + filename + ".xml"), contentRoot, testCaseMap);
+                return XmlToPdf.convertXmlToPdf(new File(contentRoot + "target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }

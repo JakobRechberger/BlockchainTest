@@ -4,7 +4,7 @@ import code.signature.Signature;
 
 import java.io.File;
 
-import static code.signature.Verification.verify_signature;
+import static code.signature.Verification.verifySignature;
 import static code.util.FileUtil.getHashValueOfFileContent;
 
 public class TestVerification {
@@ -37,7 +37,7 @@ public class TestVerification {
         String substring = testReportFileName.substring(0, testReportFileName.length() - 4);
         testReport.setSignature(new File("temp/signatures/"+ substring +"_signature" ));
         testReport.setPublickey(new File("temp/signatures/"+ substring +"_publickey" ));
-        if(verify_signature(testReport.getTestObject(), testReport.getPublickey(), testReport.getSignature())){
+        if(verifySignature(testReport.getTestObject(), testReport.getPublickey(), testReport.getSignature())){
             System.out.println("Signature verified");
         }
     }

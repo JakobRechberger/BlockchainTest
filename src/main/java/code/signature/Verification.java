@@ -9,7 +9,7 @@ import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 
 public class Verification {
-    public static boolean verify_signature(File file, File publickey_file, File signature_file){
+    public static boolean verifySignature(File file, File publickey_file, File signature_file){
         try {
             byte[] publicKeyEncoded = Files.readAllBytes(Paths.get(publickey_file.getAbsolutePath()));
             byte[] digitalSignature = Files.readAllBytes(Paths.get(signature_file.getAbsolutePath()));
