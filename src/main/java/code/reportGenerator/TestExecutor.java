@@ -1,4 +1,5 @@
 package code.reportGenerator;
+import code.signature.Signature;
 import code.util.POMChecker;
 import code.util.XmlToPdf;
 import org.apache.maven.shared.invoker.*;
@@ -22,6 +23,7 @@ public class TestExecutor {
                 String contentRootPath= filterContentRoot(file);
                 String filename = filterFilenameFromPath(file.getAbsolutePath());
                 File testReport=executeTestsAndProcessReport(filename, contentRootPath);
+                Signature.signFile(testReport);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,9 +53,10 @@ public class TestExecutor {
             if (result.getExitCode() != 0) {
                 throw new IllegalStateException("Build failed.");
             }
+
             try {
                 Map<String, String> testCaseMap = decompileClassFile(contentRoot + "target/test-classes/"+ filename + ".class");
-                return XmlToPdf.convertXmlToPdf(new File(contentRoot + "target/surefire-reports/TEST-" + filename + ".xml"), testCaseMap);
+                return XmlToPdf.convertXmlToPdf(new File(contentRoot + "target/surefire-reports/TEST-" + filename + ".xml"), contentRoot, testCaseMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -98,7 +101,9 @@ public class TestExecutor {
 
     public static Map<String, String> extractTestCaseMethods(String decompiledCode) {
         Map<String, String> testCaseMap = new HashMap<>();
-        Pattern pattern = Pattern.compile("(@Test\\s+)?(public|protected|private|static|\\s) +[\\w\\[\\]]+ +(\\w+) *\\([^\\)]*\\) *(\\{(?:[^\\{\\}]|\\{(?:[^\\{\\}]|\\{[^\\{\\}]*\\})*\\})*\\})");
+        Pattern pattern = Pattern.compile("(@Test\\s+)?(public|protected|private|static|\\s) " +
+                "+[\\w\\[\\]]+ " +
+                "+(\\w+) *\\([^\\)]*\\) *(\\{(?:[^\\{\\}]|\\{(?:[^\\{\\}]|\\{[^\\{\\}]*\\})*\\})*\\})");
         Matcher matcher = pattern.matcher(decompiledCode);
 
         while (matcher.find()) {

@@ -12,8 +12,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
-        <maven.surefire.version>2.22.0</maven.surefire.version>
         <maven.surefire.report.plugin.version>3.3.0</maven.surefire.report.plugin.version>
+        <junit.jupiter.version>5.9.2</junit.jupiter.version>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
         <org.junit.platform.version>1.2.0</org.junit.platform.version>
         <openhtml.version>1.0.10</openhtml.version>
         <commons.codec.version>1.16.0</commons.codec.version>
@@ -21,7 +22,9 @@
         <org.apache.xmlgraphics.version>2.6</org.apache.xmlgraphics.version>
         <com.openhtmltopdf.version>1.0.10</com.openhtmltopdf.version>
         <org.benf.version>0.152</org.benf.version>
-    </properties>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+</properties>
     <dependencies>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -31,7 +34,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -56,6 +59,12 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering> <!-- Enable filtering -->
+        </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

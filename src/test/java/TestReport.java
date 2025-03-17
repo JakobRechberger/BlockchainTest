@@ -17,6 +17,18 @@ public class TestReport {
         assertEquals(y, 99);
     }
     @Test
+    void testNull() {
+        Object obj = null;
+        assertNull(obj, "Object should be null");
+    }
+    @Test
+    void testDivisionByZero() {
+        Exception exception = assertThrows(ArithmeticException.class, () -> {
+            int result = 1 / 0;
+        });
+        assertEquals("/ by zero", exception.getMessage());
+    }
+    @Test
     void UnitTestFalse(){
         int x = 0;
         int y = 0;
@@ -29,16 +41,5 @@ public class TestReport {
         assertEquals(x, 10);
         assertEquals(y, 10);
     }
-    @Test
-    void testDivisionByZero() {
-        Exception exception = assertThrows(ArithmeticException.class, () -> {
-            int result = 1 / 0;
-        });
-        assertEquals("/ by zero", exception.getMessage());
-    }
-    @Test
-    void testNull() {
-        Object obj = null;
-        assertNull(obj, "Object should be null");
-    }
+
 }

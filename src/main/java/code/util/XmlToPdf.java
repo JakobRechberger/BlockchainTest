@@ -1,6 +1,7 @@
 package code.util;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -8,19 +9,28 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class XmlToPdf {
-    public static File convertXmlToPdf(File filepath, Map<String, String> testCaseMap) {
+    public static File convertXmlToPdf(File filepath, String contentRoot, Map<String, String> testCaseMap) {
             String htmlContent = htmlStringBuilder(filepath, testCaseMap);
-            String htmlFilePath = changeFileSuffix(filepath.getPath());
-            String pdfFileName = filepath.getName().substring(0, filepath.getName().length()-4) + ".pdf";
+            File testDirectory = new File(contentRoot, "test-reports");
+
+            if (!testDirectory.exists()) {
+                testDirectory.mkdir();
+            }
+            try{
+                FileUtils.copyFile(filepath, new File(testDirectory+ File.separator+ changeFileSuffix(filepath.getName(), "xml")));
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+
+            String htmlFilePath = testDirectory+ File.separator+ changeFileSuffix(filepath.getName(), "html");
+            String pdfFilePath = testDirectory+ File.separator+ changeFileSuffix(filepath.getName(), "pdf");
             try{
                 FileWriter writer = new FileWriter(htmlFilePath);
                 writer.write(htmlContent);
@@ -30,13 +40,13 @@ public class XmlToPdf {
             catch (Exception e){
                 e.printStackTrace();
             }
-            try (OutputStream os = new FileOutputStream(pdfFileName)) {
+            try (OutputStream os = new FileOutputStream(pdfFilePath);) {
                 PdfRendererBuilder builder = new PdfRendererBuilder();
                 builder.useFastMode();
                 builder.withHtmlContent(htmlContent, new File(htmlFilePath).getParent());
                 builder.toStream(os);
                 builder.run();
-                return new File(pdfFileName);
+                return new File(pdfFilePath);
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -98,8 +108,8 @@ public class XmlToPdf {
         }
         return "";
     }
-    public static String changeFileSuffix(String filepath){
-        return filepath.substring(0,filepath.length() - 3) + "html";
+    public static String changeFileSuffix(String filepath, String suffix){
+        return filepath.substring(0,filepath.length() - 3) + suffix;
     }
     public static String escapeHtml(String input) {
         if (input == null) {

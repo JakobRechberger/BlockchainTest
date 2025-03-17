@@ -23,7 +23,6 @@ public class FileUtil {
                 }
                 hexString.append(hex);
             }
-            System.out.println("Hash-Value of File: "+hexString);
             return hexString.toString();
         }
         catch (Exception e){
